@@ -74,3 +74,13 @@ CREATE TABLE estoque_movimentacao (
     quantidade INT NOT NULL,
     FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
+
+
+INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
+VALUES("Pedro Ferreira", "pedrindomel23@gmail.com", "75981652872", "43075721", "rua buenos aires", "Feira de Santana", "Bahia");
+
+INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
+VALUES("Joao Saturino", "joaolinux13@gmail.com", "75991582872", "44075721", "rua Brasil", "Feira de Santana", "Bahia");
+
+INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
+VALUES("Matheus Alcatra", "mateusaucanta@gmail.com", "75981652332", "43045721", "rua Volta Redonda", "Feira de Santana", "Bahia");
