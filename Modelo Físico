@@ -84,3 +84,33 @@ VALUES("Joao Saturino", "joaolinux13@gmail.com", "75991582872", "44075721", "rua
 
 INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
 VALUES("Matheus Alcatra", "mateusaucanta@gmail.com", "75981652332", "43045721", "rua Volta Redonda", "Feira de Santana", "Bahia");
+
+INSERT INTO fornecedores(nome, telefone, email, cep, endereco, cidade, estado)
+VALUES("Motorhigh","(71)99232-9393","chaimae2539@uorak.com","41214-375","4ª Travessa Samuel","Salvador","Bahia");
+
+INSERT INTO fornecedores(nome, telefone, email, cep, endereco, cidade, estado)
+VALUES("Chapas e cia","(71)98232-9393","chapase539@gmail.com","41339-352","Caminho 08-Quadra C","Salvador","Bahia");
+
+INSERT INTO categorias(nome, descricao)
+VALUES ("Peças_Motor", "Peças de motor em geral");
+
+INSERT INTO categorias(nome, descricao)
+VALUES ("Chaparia", "Externa do carro em geral como parachoques saias laterais etc");
+
+INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
+VALUES("Pistão", 1, 1, 230.4, 300);
+
+INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
+VALUES("Virabrequim", 1, 1, 403.99, 520);
+
+INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
+VALUES("Motor", 1, 1, 5789.49, 20);
+
+INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
+VALUES("Parachoque Frontal e Traseiro", 2, 2, 700.9, 200);
+
+INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
+VALUES("Saia Lateral", 2, 2, 346.05, 400);
+
+CREATE VIEW V_Todos_Clientes AS
+Select * FROM clientes;
