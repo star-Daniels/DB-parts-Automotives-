@@ -76,6 +76,63 @@ CREATE TABLE estoque_movimentacao (
 );
 
 
+DELIMITER $$
+CREATE TRIGGER novo_estoque
+AFTER INSERT ON itens_venda
+FOR EACH ROW
+BEGIN
+    UPDATE produtos
+    SET quantidade = quantidade - NEW.quantidade
+    WHERE id = NEW.produto_id;
+
+    INSERT INTO estoque_movimentacao (produto_id, tipo_movimentacao, quantidade)
+    VALUES (NEW.produto_id, 'saída', NEW.quantidade);
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER voltar_estoque
+AFTER DELETE ON itens_venda
+FOR EACH ROW
+BEGIN
+    UPDATE produtos
+    SET quantidade = quantidade + OLD.quantidade
+    WHERE id = OLD.produto_id;
+
+    INSERT INTO estoque_movimentacao (produto_id, tipo_movimentacao, quantidade)
+    VALUES (OLD.produto_id, 'entrada', OLD.quantidade);
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER novo_status_pagamento
+AFTER INSERT ON pagamentos
+FOR EACH ROW
+BEGIN
+    DECLARE total_pago DECIMAL(10, 2);
+
+    SELECT SUM(valor_pago) INTO total_pago
+    FROM pagamentos
+    WHERE venda_id = NEW.venda_id;
+
+    IF total_pago >= (SELECT valor_total FROM vendas WHERE id = NEW.venda_id) THEN
+        UPDATE vendas
+        SET status = 'Concluida'
+        WHERE id = NEW.venda_id;
+    END IF;
+END$$
+DELIMITER ;
+
+
+CREATE FUNCTION preco_total(valor DECIMAL, qtd INT)
+RETURNS INT
+RETURN valor*qtd;
+
+CREATE FUNCTION novo_estoque(qtd_anterior INT, qtd_retirada INT)
+RETURNS INT
+RETURN qtd_anterior - qtd_retirada;
+
 INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
 VALUES("Pedro Ferreira", "pedrindomel23@gmail.com", "75981652872", "43075721", "rua buenos aires", "Feira de Santana", "Bahia");
 
