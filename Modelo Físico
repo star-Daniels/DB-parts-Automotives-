@@ -124,6 +124,25 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE todas_vendas (IN p_cliente_id INT)
+BEGIN
+    SELECT v.id AS venda_id, 
+           v.data_venda, 
+           v.valor_total, 
+           v.status,
+           GROUP_CONCAT(CONCAT(p.nome, ' (', iv.quantidade, ')')) AS itens
+    FROM vendas v
+    JOIN itens_venda iv ON v.id = iv.venda_id
+    JOIN produtos p ON iv.produto_id = p.id
+    WHERE v.cliente_id = p_cliente_id
+    GROUP BY v.id
+    ORDER BY v.data_venda DESC;
+END$$
+DELIMITER ;
+
+CALL todas_vendas(1);
+
 
 CREATE FUNCTION preco_total(valor DECIMAL, qtd INT)
 RETURNS INT
@@ -141,6 +160,9 @@ VALUES("Joao Saturino", "joaolinux13@gmail.com", "75991582872", "44075721", "rua
 
 INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
 VALUES("Matheus Alcatra", "mateusaucanta@gmail.com", "75981652332", "43045721", "rua Volta Redonda", "Feira de Santana", "Bahia");
+
+INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
+VALUES("Sayd Aires", "ibatman@gmail.com", "75982582332", "43045721", "rua Olimpicos", "Feira de Santana", "Bahia");
 
 INSERT INTO fornecedores(nome, telefone, email, cep, endereco, cidade, estado)
 VALUES("Motorhigh","(71)99232-9393","chaimae2539@uorak.com","41214-375","4ª Travessa Samuel","Salvador","Bahia");
@@ -169,5 +191,88 @@ VALUES("Parachoque Frontal e Traseiro", 2, 2, 700.9, 200);
 INSERT INTO produtos(nome, categoria_id,fornecedor_id, preco, quantidade_em_estoque)
 VALUES("Saia Lateral", 2, 2, 346.05, 400);
 
+INSERT INTO vendas (cliente_id, data_venda, valor_total)
+VALUES (1, '03-09-2024', 346.05);
+
+
+INSERT INTO vendas (cliente_id, data_venda, valor_total)
+VALUES (2, '20-11-2024', 1100.9);
+
+
+INSERT INTO vendas (cliente_id, data_venda, valor_total, status)
+VALUES (3, '07-11-2024', 6836.44, 'Concluida');
+
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_total)
+VALUES 
+(1, 5, 1, 346.05);
+
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_total)
+VALUES 
+(2, 4, 1, 700.9), 
+(2, 5, 1, 346.05);  
+
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_total)
+VALUES 
+(3, 3, 1, 5789.49),  
+(3, 4, 1, 700.9),
+(3, 5, 1, 346.05);  
+
+UPDATE produtos
+SET preco = 208.99
+WHERE id = 1;
+
+UPDATE clientes
+SET email = "ihatebatman@gmail.com"
+WHERE id = 4;
+
+UPDATE fornecedores
+SET email = "chapasecia59@gmail.com"
+WHERE id = 2;
+
+DELETE FROM produtos
+WHERE id = 1;
+
 CREATE VIEW V_Todos_Clientes AS
 Select * FROM clientes;
+
+CREATE VIEW V_total_gasto AS
+SELECT c.id, c.nome, SUM(v.valor_total) AS total_gasto
+FROM clientes c
+JOIN vendas v ON c.id = v.cliente_id
+GROUP BY c.id, c.nome;
+
+CREATE VIEW V_categoria AS
+SELECT p.nome AS produto, c.nome AS categoria
+FROM produtos p
+JOIN categorias c ON p.categoria_id = c.id;
+
+CREATE VIEW V_produtos_mais_vendidos AS
+SELECT p.id, p.nome, SUM(iv.quantidade) AS total_vendido
+FROM itens_venda iv
+JOIN produtos p ON iv.produto_id = p.id
+GROUP BY p.id, p.nome
+ORDER BY total_vendido DESC;
+
+CREATE VIEW V_todos_fornecedores AS
+SELECT * FROM fornecedores;
+
+CREATE VIEW view_produtos_por_fornecedor AS
+SELECT f.nome AS fornecedor, p.nome AS produto
+FROM produtos p
+JOIN fornecedores f ON p.fornecedor_id = f.id;
+
+CREATE VIEW V_todas_vendas AS
+SELECT * FROM vendas;
+
+CREATE VIEW V_todos_itens_vendidos AS
+SELECT * FROM itens_venda;
+
+CREATE VIEW V_todas_movimentacoes AS
+SELECT * FROM estoque_movimentacao;
+
+CREATE VIEW V_vendas_recentes AS
+SELECT *
+FROM vendas v
+JOIN clientes c ON v.cliente_id = c.id
+WHERE v.data_venda >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+ORDER BY v.data_venda DESC;
