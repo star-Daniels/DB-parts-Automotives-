@@ -164,6 +164,9 @@ VALUES("Matheus Alcatra", "mateusaucanta@gmail.com", "75981652332", "43045721", 
 INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
 VALUES("Sayd Aires", "ibatman@gmail.com", "75982582332", "43045721", "rua Olimpicos", "Feira de Santana", "Bahia");
 
+INSERT INTO clientes (nome, email, telefone, cep, endereco, cidade, estado) 
+VALUES("Maria Luiza", "luliz@gmail.com", "75975682452", "43054721", "rua Senegal", "Feira de Santana", "Bahia");
+
 INSERT INTO fornecedores(nome, telefone, email, cep, endereco, cidade, estado)
 VALUES("Motorhigh","(71)99232-9393","chaimae2539@uorak.com","41214-375","4ª Travessa Samuel","Salvador","Bahia");
 
@@ -231,6 +234,12 @@ WHERE id = 2;
 
 DELETE FROM produtos
 WHERE id = 1;
+
+DELETE FROM produtos
+WHERE id = 2;
+
+DELETE FROM clientes
+WHERE id = 4;
 
 CREATE VIEW V_Todos_Clientes AS
 Select * FROM clientes;
